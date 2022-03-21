@@ -1,0 +1,84 @@
+<div class="wrapper-custom-table">
+  <div class="dropdown-collapse-wrapper">
+    <div class="dropdown-collapse">
+      <img src="assets/icons/more-circle.svg" alt="" (click)="openCheckboxes($event)">
+      <div class="collapse-content" *ngIf="openedCheckboxes">
+        <label *ngFor="let headerCheckbox of headerCheckboxes;" class="collapse-item text-capitalize">
+          <input [checked]="headerCheckbox.isHidden" type="checkbox"
+                 (click)="toggleExpandFieldOrHideColumn(headerCheckbox.name, 'isHidden')">
+          <span *ngIf="headerCheckbox.nameForView.length !== 0" class="checkmark">
+                        <img src="../../../assets/icons/checked-icon.svg" alt="">
+                    </span>
+          {{headerCheckbox.nameForView}}
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <div class="dropdown-search-wrapper">
+    <div class="dropdown-search" [ngClass]="{'active-search': isFilterActive}"
+         (click)="isFilterActive = !isFilterActive">
+      <img class="gray" src="../../../assets/icons/filter.svg" alt="" *ngIf="!isFilterActive">
+      <img class="green" src="../../../assets/icons/filter-green.svg" alt="" *ngIf="isFilterActive">
+    </div>
+  </div>
+  <div class="custom-table">
+    <div class="header-table">
+      <div class="row-table">
+        <div class="col-header-table">
+          <span></span>
+          <!--          <img src="../../../assets/icons/sort.svg" alt="">-->
+        </div>
+      </div>
+      <div class="row-table" *ngFor="let obj of tableDataForView[0] | keyvalue"
+           (click)="toggleExpandFieldOrHideColumn(obj.key, 'isExpanded')">
+        <div *ngIf="!returnSpecificVal(obj, 'isHidden')" class="col-header-table"
+             [@expandAnimation]="returnSpecificVal(obj, 'isExpanded')"
+             #header [id]="returnSpecificVal(obj, 'id')">
+          <span>{{returnSpecificVal(obj, 'nameForView')}}</span>
+          <!--                    <div *ngIf="columnName.name.length !== 0" class="collapse-col">-->
+          <!--                        <img src="assets/icons/more.svg" alt="">-->
+          <!--                    </div>-->
+          <img src="../../../assets/icons/sort.svg" alt="">
+        </div>
+      </div>
+    </div>
+    <div class="search-table" *ngIf="isFilterActive">
+      <div>
+        <div class="column-table-search">
+
+        </div>
+      </div>
+      <div *ngFor="let obj of tableDataForView[0] | keyvalue">
+        <div class="column-table-search" *ngIf="!returnSpecificVal(obj, 'isHidden')"
+             [@expandAnimation]="returnSpecificVal(obj, 'isExpanded')">
+          <app-ws-search-input
+            [searchQuery]="returnSpecificVal(obj, 'searchModel')" *ngIf="returnSpecificVal(obj, 'search')"
+            (searchChanged)="emitSearchChanged($event, obj)">
+          </app-ws-search-input>
+          <!--            <input *ngIf="!field.isHidden" type="text" [placeholder]="'Suche ' + field.name | removeSpecChar"-->
+          <!--                   [(ngModel)]="field.searchModel"-->
+          <!--                   (keyup.enter)="searchSectionPlansFunc(columnName, columnName.searchModel)">-->
+        </div>
+      </div>
+    </div>
+    <div class="content-table">
+      <div class="row-table" *ngFor="let data of tableDataForView" (click)="openSingleView(data.value)">
+        <div class="col-content-table">
+          <label class="collapse-item">
+            <input type="checkbox">
+            <span class="checkmark">
+                <img src="../../../assets/icons/checked-icon.svg" alt="">
+            </span>
+          </label>
+        </div>
+        <div *ngFor="let obj of data | keyvalue">
+          <div *ngIf="!returnSpecificVal(obj, 'isHidden')" class="col-content-table"
+               [@expandAnimation]="returnSpecificVal(obj, 'isExpanded')">
+            <p>{{returnSpecificVal(obj, 'value')}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
